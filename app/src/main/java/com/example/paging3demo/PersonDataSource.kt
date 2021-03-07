@@ -3,6 +3,7 @@ package com.example.paging3demo
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import kotlinx.coroutines.delay
 import java.lang.Exception
 
 class PersonDataSource(private val repository: PersonRepository) : PagingSource<Int, Person>() {
@@ -11,6 +12,7 @@ class PersonDataSource(private val repository: PersonRepository) : PagingSource<
         val startIndex = pos * params.loadSize + 1
         val endIndex = (pos + 1) * params.loadSize
         return try {
+            delay(2000)
             val personList = repository.getPersonList(startIndex, endIndex)
             Log.d("AAAA", personList.size.toString())
             Log.d("AAAA",personList[0].name)

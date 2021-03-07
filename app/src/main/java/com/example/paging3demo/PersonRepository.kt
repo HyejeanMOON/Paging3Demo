@@ -1,10 +1,12 @@
 package com.example.paging3demo
 
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+
 class PersonRepository {
 
-    fun getPersonList(startIndex: Int, endIndex: Int): List<Person> {
+    suspend fun getPersonList(startIndex: Int, endIndex: Int): List<Person> = suspendCoroutine {
         val list: MutableList<Person> = mutableListOf()
-
         for (i in startIndex..endIndex) {
             val person = Person(
                 name = "name$i",
@@ -13,6 +15,6 @@ class PersonRepository {
             )
             list.add(person)
         }
-        return list
+        it.resume(list)
     }
 }

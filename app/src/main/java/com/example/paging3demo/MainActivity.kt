@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import com.example.paging3demo.databinding.ActivityMainBinding
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -20,7 +21,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         val adapter = PersonAdapter(this)
-        binding.recyclerView.adapter = adapter
+
+        val concatAdapter = adapter.withLoadStateFooter(
+            footer = PersonLoadStateAdapter(this)
+        )
+
+        binding.recyclerView.adapter = concatAdapter
 
         lifecycleScope.launch {
             viewModel.personList.collectLatest {
@@ -32,8 +38,8 @@ class MainActivity : AppCompatActivity() {
             adapter.refresh()
         }
 
-        adapter.addLoadStateListener {state ->
-            when(state.refresh){
+        adapter.addLoadStateListener { state ->
+            when (state.refresh) {
                 is LoadState.Loading -> {
                     binding.swipeRefreshLayout.isRefreshing = true
                 }
@@ -45,6 +51,5 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 }
